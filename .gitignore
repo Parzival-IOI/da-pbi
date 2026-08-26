@@ -1,0 +1,20 @@
+# === Streamlit Specific ===
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# === Python Virtual Environments ===
+.venv/
+venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+
+# === Sensitive Information & Environment Variables ===
+.env
+*.env
+secrets.json
+
+# === Operating System Trash ===
+.DS_Store
+Thumbs.db
