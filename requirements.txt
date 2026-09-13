@@ -1,2 +1,4 @@
 streamlit=1.62.0
 sqlalchemy=2.0.52
+pandas
+openpyxl
