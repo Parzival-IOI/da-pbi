@@ -1,5 +1,5 @@
 with cte as (
-   select *,
+   select s.Status, s.Amount,
        SUBSTR(s.Date, -4) || '-' ||
        CASE SUBSTR(
            s.Date,
@@ -17,16 +17,14 @@ with cte as (
                INSTR(s.Date, ', ') + 2 + INSTR(SUBSTR(s.Date, INSTR(s.Date, ', ') + 2), ' '),
                2
            ) AS INTEGER
-       )) as formated_date
+       )) as sale_date
    from sales s
+       left join product p on s.ProductID = p.ProductID
+   where (:dim = 'Product' and p.Product = :item) or (:dim = 'Category' and p.Category = :item)
 )
-select 
-   STRFTIME('%Y-%m', s.formated_date) as year_month,
-   sum(s.amount) as total_price 
-from cte s
-   left JOIN product p on s.ProductID = p.ProductID 
-where s.status = 'Returned'
-	and (:store_id = 0 or s.StoreID = :store_id)
-	and (:dim = '' or (:dim = 'Product' and p.Product = :item) or (:dim = 'Category' and p.Category = :item))
-group by year_month
-order by year_month
+select sale_date,
+	sum(case when Status = 'Sold' then Amount else 0 end) as sold,
+	sum(case when Status = 'Returned' then Amount else 0 end) as returned
+from cte
+group by sale_date
+order by sale_date

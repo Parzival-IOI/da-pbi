@@ -25,7 +25,7 @@ select
    sum(s.amount) as total_price 
 from cte s
    left JOIN product p on s.ProductID = p.ProductID 
-where s.status = 'Returned'
+where s.status = 'Sold'
 	and (:store_id = 0 or s.StoreID = :store_id)
 	and (:dim = '' or (:dim = 'Product' and p.Product = :item) or (:dim = 'Category' and p.Category = :item))
 group by year_month

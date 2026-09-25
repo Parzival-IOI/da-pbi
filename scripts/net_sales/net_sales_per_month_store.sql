@@ -20,13 +20,15 @@ with cte as (
        )) as formated_date
    from sales s
 )
-select 
+select
    STRFTIME('%Y-%m', s.formated_date) as year_month,
-   sum(s.amount) as total_price 
+   st.Store as store,
+   sum(s.amount) as total_price
 from cte s
-   left JOIN product p on s.ProductID = p.ProductID 
-where s.status = 'Returned'
+   left join store st on st.StoreID = s.StoreID
+   left join product p on s.ProductID = p.ProductID
+where s.status = 'Sold'
 	and (:store_id = 0 or s.StoreID = :store_id)
 	and (:dim = '' or (:dim = 'Product' and p.Product = :item) or (:dim = 'Category' and p.Category = :item))
-group by year_month
-order by year_month
+group by year_month, st.Store
+order by year_month, st.Store
